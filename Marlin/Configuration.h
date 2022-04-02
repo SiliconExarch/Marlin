@@ -69,14 +69,14 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "LChristophe68" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "SiliconExarch" // Who made the changes.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 //
 //Init base for Extented JyersUI by Christophe LEVEQUE
 //
 #define DWIN_CREALITY_LCD_JYERSUI
-//#define DWIN_CREALITY_LCD_CUSTOM_ICONS
+#define DWIN_CREALITY_LCD_CUSTOM_ICONS
 #ifndef Ext_Config_JyersUI
   #define Ext_Config_JyersUI 1
   #include "User_config.h"
@@ -132,7 +132,7 @@
  *
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
-#define BAUDRATE 250000   // Ender3v2 Configs
+#define BAUDRATE 115200   // Ender3v2 Configs
 #define LCD_BAUDRATE 115200   // Ender3v2 Configs
 #define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate   // Ender3v2 Configs
 
@@ -157,7 +157,7 @@
 
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "Ender-3 V2 BLTouch 5x5"   // Ender3v2 Configs
+#define CUSTOM_MACHINE_NAME "Ender-3 V2 + CR-Touch"   // Ender3v2 Configs
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -1215,7 +1215,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { -40, -7, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { -41.24, -6.25, 0 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1904,8 +1904,8 @@
 // Preheat Constants - Up to 5 are supported without changes
 //
 #define PREHEAT_1_LABEL       "Warmup"
-#define PREHEAT_1_TEMP_HOTEND  210
-#define PREHEAT_1_TEMP_BED      70
+#define PREHEAT_1_TEMP_HOTEND  170
+#define PREHEAT_1_TEMP_BED      60
 #define PREHEAT_1_FAN_SPEED      0 // Value from 0 to 255
 
 #define PREHEAT_2_LABEL       "PLA"
