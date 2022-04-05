@@ -75,7 +75,7 @@ void EndSDiagClass::Draw_ends_diag() {
   char str[20];
   sprintf_P(str, PSTR("%s %s"), GET_TEXT(MSG_LCD_ENDSTOPS), GET_TEXT(MSG_DEBUG_MENU));
   CrealityDWINClass::Clear_Screen(1);
-  CrealityDWINClass::Draw_Title(F(str));
+  CrealityDWINClass::Draw_Title(str);
   JYERSUI::ClearMenuArea();
   DWIN_Draw_Rectangle(0, Color_White, 13, 59, 259, 351);
   CrealityDWINClass::DWIN_Init_diag_endstops();

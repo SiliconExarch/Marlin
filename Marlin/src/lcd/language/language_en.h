@@ -416,7 +416,7 @@ namespace Language_en {
   LSTR MSG_ADVANCE_K_E                    = _UxGT("Advance K *");
   LSTR MSG_CONTRAST                       = _UxGT("LCD Contrast");
   LSTR MSG_BRIGHTNESS                     = _UxGT("LCD Brightness");
-  LSTR MSG_LCD_BKL_TIMEOUT                = _UxGT("LCD Timeout (s)");
+  LSTR MSG_LCD_TIMEOUT_SEC                = _UxGT("LCD Timeout (s)");
   LSTR MSG_BRIGHTNESS_OFF                 = _UxGT("Backlight Off");
   LSTR MSG_STORE_EEPROM                   = _UxGT("Store Settings");
   LSTR MSG_LOAD_EEPROM                    = _UxGT("Load Settings");
@@ -641,10 +641,9 @@ namespace Language_en {
     LSTR MSG_INFO_PRINT_COUNT_RESET       = _UxGT("Reset Print Counter");
     #if ENABLED(DWIN_CREALITY_LCD_JYERSUI)
       LSTR MSG_INFO_PRINT_COUNT             = _UxGT("Prints");
-      LSTR MSG_INFO_PRINT_TIME              = _UxGT("Print Time");
-      LSTR MSG_INFO_PRINT_TOTAL              = _UxGT("Total");
+      LSTR MSG_INFO_PRINT_TIME              = _UxGT("Printed");
       LSTR MSG_INFO_PRINT_LONGEST           = _UxGT("Longest");
-      LSTR MSG_INFO_PRINT_FILAMENT          = _UxGT("filament used.");
+      LSTR MSG_INFO_PRINT_FILAMENT          = _UxGT("Extruded.");
       LSTR MSG_INFO_COMPLETED_PRINTS          = _UxGT("finished.");
     #else
       LSTR MSG_INFO_PRINT_COUNT             = _UxGT("Print Count");
