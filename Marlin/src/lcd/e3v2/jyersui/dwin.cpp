@@ -3947,16 +3947,16 @@
           #if ENABLED(BAUD_RATE_GCODE)
             case ADVANCED_BAUDRATE_MODE:
               if (draw) {
-                sprintf_P(cmd, PSTR("115K %s"), GET_TEXT(MSG_INFO_BAUDRATE));
+                sprintf_P(cmd, PSTR("250K %s"), GET_TEXT(MSG_INFO_BAUDRATE));
                 Draw_Menu_Item(row, ICON_Setspeed, F(cmd));
                 Draw_Checkbox(row, HMI_datas.baudratemode);
                 }
                 else {
                   HMI_datas.baudratemode = !HMI_datas.baudratemode;
-                  sprintf_P(cmd, PSTR("M575 P%i B%i"), BAUD_PORT, HMI_datas.baudratemode ? 115 : 250);
+                  sprintf_P(cmd, PSTR("M575 P%i B%i"), BAUD_PORT, HMI_datas.baudratemode ? 250 : 115);
                   gcode.process_subcommands_now(cmd);
                   Draw_Checkbox(row, HMI_datas.baudratemode);
-                  sprintf_P(cmd, GET_TEXT(MSG_INFO_BAUDRATE_CHANGED), HMI_datas.baudratemode ? 115200 : 250000);
+                  sprintf_P(cmd, GET_TEXT(MSG_INFO_BAUDRATE_CHANGED), HMI_datas.baudratemode ? 250000 : 115200);
                   Update_Status(cmd);
                   }
               break;
@@ -4254,7 +4254,7 @@
                 Draw_Menu_Item(INFO_PRINTCOUNT, ICON_HotendTemp, row1, row2, false, true);
 
                 duration_t(print_job_timer.getStats().printTime).toString(buf);
-                sprintf_P(row1, PSTR("%s: %s"), GET_TEXT(MSG_INFO_PRINT_TIME), buf);
+                sprintf_P(row1, PSTR("%s: %s"), GET_TEXT(MSG_INFO_PRINT_TOTAL), buf);
                 duration_t(print_job_timer.getStats().longestPrint).toString(buf);
                 sprintf_P(row2, PSTR("%s: %s"), GET_TEXT(MSG_INFO_PRINT_LONGEST), buf);
                 Draw_Menu_Item(INFO_PRINTTIME, ICON_PrintTime, row1, row2, false, true);
@@ -5444,9 +5444,8 @@
               return F(cmd);
       #if ENABLED(FWRETRACT)
         case FwRetraction:
-              sprintf_P(cmd, PSTR("%s %s"), GET_TEXT(MSG_FWRETRACT), GET_TEXT(MSG_CONFIGURATION));
+              sprintf_P(cmd, PSTR("%s %s"), GET_TEXT(MSG_AUTORETRACT), GET_TEXT(MSG_CONFIGURATION));
               return F(cmd);
-        //case Tune_FwRetraction:      return F("Tune FW Retraction");
       #endif
       #if ENABLED(NOZZLE_PARK_FEATURE)
         case Parkmenu:
@@ -7129,7 +7128,7 @@
 
     #if ENABLED(BAUD_RATE_GCODE)
       HMI_datas.baudratemode = 0;
-      sprintf_P(cmd, PSTR("M575 P%i B%i"), BAUD_PORT, 250);
+      sprintf_P(cmd, PSTR("M575 P%i B%i"), BAUD_PORT, 115);
       gcode.process_subcommands_now(cmd);
     #endif
 
@@ -7177,7 +7176,7 @@
     DWIN_RebootScreen();
     hal.reboot();
     #if ENABLED(BAUD_RATE_GCODE)
-      sprintf_P(cmd, PSTR("M575 P%i B%i"), BAUD_PORT, HMI_datas.baudratemode ? 115 : 250);
+      sprintf_P(cmd, PSTR("M575 P%i B%i"), BAUD_PORT, HMI_datas.baudratemode ? 250 : 115);
       gcode.process_subcommands_now(cmd);
     #endif
   }

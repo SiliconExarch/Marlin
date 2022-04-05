@@ -501,12 +501,7 @@ namespace Language_en {
   LSTR MSG_CONTROL_RETRACT_RECOVER_SWAP   = _UxGT("S Unretr. mm");
   LSTR MSG_CONTROL_RETRACT_RECOVERF       = _UxGT("Unretract V");
   LSTR MSG_CONTROL_RETRACT_RECOVER_SWAPF  = _UxGT("S UnRet V");
-  #if ENABLED(DWIN_CREALITY_LCD_JYERSUI)
-    LSTR MSG_FWRETRACT                      = _UxGT("FW Retract");
-    LSTR MSG_AUTORETRACT                    = _UxGT("Firmw. Retraction");
-  #else
-    LSTR MSG_AUTORETRACT                    = _UxGT("Auto-Retract");
-  #endif
+  LSTR MSG_AUTORETRACT                    = _UxGT("Auto-Retract");
   LSTR MSG_FILAMENT_SWAP_LENGTH           = _UxGT("Swap Length");
   LSTR MSG_FILAMENT_SWAP_EXTRA            = _UxGT("Swap Extra");
   LSTR MSG_FILAMENT_PURGE_LENGTH          = _UxGT("Purge Length");
@@ -654,7 +649,7 @@ namespace Language_en {
     #endif
     LSTR MSG_COLORS_GET                   = _UxGT("Get Color");
     #if ENABLED(DWIN_CREALITY_LCD_JYERSUI)
-      LSTR MSG_COLORS_SELECT                = _UxGT("Select UI Colors");
+      LSTR MSG_COLORS_SELECT                = _UxGT("Select UI Colours");
     #else
       LSTR MSG_COLORS_SELECT                = _UxGT("Select Colors");
     #endif
@@ -670,7 +665,7 @@ namespace Language_en {
     LSTR MSG_MEDIA_NOT_INSERTED           = _UxGT("No Media");
     LSTR MSG_PLEASE_PREHEAT               = _UxGT("Please Preheat");
     LSTR MSG_INFO_PRINT_COUNT             = _UxGT("Prints");
-    LSTR MSG_INFO_PRINT_TIME              = _UxGT("Total");
+    LSTR MSG_INFO_PRINT_TOTAL              = _UxGT("Total");
     LSTR MSG_INFO_PRINT_LONGEST           = _UxGT("Longest");
     LSTR MSG_INFO_PRINT_FILAMENT          = _UxGT("Extruded");
   #endif
