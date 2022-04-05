@@ -636,9 +636,10 @@ namespace Language_en {
     LSTR MSG_INFO_PRINT_COUNT_RESET       = _UxGT("Reset Print Counter");
     #if ENABLED(DWIN_CREALITY_LCD_JYERSUI)
       LSTR MSG_INFO_PRINT_COUNT             = _UxGT("Prints");
-      LSTR MSG_INFO_PRINT_TIME              = _UxGT("Printed");
+      LSTR MSG_INFO_PRINT_TIME              = _UxGT("Print Time");
+      LSTR MSG_INFO_PRINT_TOTAL              = _UxGT("Total");
       LSTR MSG_INFO_PRINT_LONGEST           = _UxGT("Longest");
-      LSTR MSG_INFO_PRINT_FILAMENT          = _UxGT("Extruded.");
+      LSTR MSG_INFO_PRINT_FILAMENT          = _UxGT("filament used.");
       LSTR MSG_INFO_COMPLETED_PRINTS          = _UxGT("finished.");
     #else
       LSTR MSG_INFO_PRINT_COUNT             = _UxGT("Print Count");
