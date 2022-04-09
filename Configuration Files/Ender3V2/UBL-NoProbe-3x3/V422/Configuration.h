@@ -157,7 +157,7 @@
 
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "Ender-3 V2 UBL Noprobe 3x3"   // Ender3v2 Configs
+//#define CUSTOM_MACHINE_NAME "Ender-3 V2 UBL Noprobe 3x3"   // Ender3v2 Configs
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -1028,7 +1028,7 @@
  *   https://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
  */
 #if DISABLED(CLASSIC_JERK)
-  #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
+  #define JUNCTION_DEVIATION_MM 0.08  // (mm) Distance from real junction edge: 0.4*(jerk * jerk)/Acceleration -> 0.4*(10*10)/500 // (mm) Distance from real junction edge
   #define JD_HANDLE_SMALL_SEGMENTS    // Use curvature estimation instead of just the junction angle
                                       // for small segments (< 1mm) with large junction angles (> 135°).
 #endif
@@ -1485,7 +1485,7 @@
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT_ENABLES and a FIL_RUNOUT_MODE for each.
   
-  #define FIL_RUNOUT_ENABLED { true } // Default state for sensors E0, E1[, E2, E3] // Enable the sensor on startup. Override with M591 followed by M500.
+  #define FIL_RUNOUT_ENABLED { false } // Default state for sensors E0, E1[, E2, E3] // Enable the sensor on startup. Override with M591 followed by M500.
   #define FIL_RUNOUT_MODE { 1 } // Array set that will take the place of FIL_RUNOUT_STATE and FIL_RUNOUT_ENABLED_DEFAULT as this code matures
                                 // 0 -> None, 1 -> HIGH switch, 2 -> LOW switch, 7 -> Motion Sensor detector
   

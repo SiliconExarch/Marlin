@@ -25,6 +25,7 @@
 //#define DEBUG_DWIN 1
 
 #include "../../../core/types.h"
+//#include "../../../core/macros.h"
 #include "../common/dwin_color.h"
 
 
@@ -61,30 +62,68 @@
   #undef BABYSTEP_ZPROBE_OFFSET
 #endif
 
-#ifndef FILAMENT_RUNOUT_SENSOR
-  #define FILAMENT_RUNOUT_SENSOR
-  #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-    #define NUM_RUNOUT_SENSORS   1
-    
-    #define FIL_RUNOUT_ENABLED { false }
-    #define FIL_RUNOUT_MODE { 1 } // Array set that will take the place of FIL_RUNOUT_STATE and FIL_RUNOUT_ENABLED_DEFAULT as this code matures
-                                  // 0 -> None, 1 -> HIGH switch, 2 -> LOW switch, 7 -> Motion Sensor detector
-    //#define WATCH_ALL_RUNOUT_SENSORS 
-    #define FILAMENT_RUNOUT_SCRIPT "M600"
+#if NONE(AQUILA_DISPLAY, DACAI_DISPLAY)
+  #define DWIN_DISPLAY
+#endif
 
-    // In Mode 1 or 2, continue printing this length of filament after a run out occurs before executing the
-    // runout script. Useful for a sensor at the end of a feed tube or debounce on a flakey sensor.
-    // In Mode 7, extrusion distance to expect a change of state.
-    // Override with M591EnLnn
-    #define FIL_RUNOUT_DISTANCE_MM { 15 }
+#if DISABLED(REVERSE_ENCODER_DIRECTION) && ENABLED(AQUILA_DISPLAY)
+  #define REVERSE_ENCODER_DIRECTION
+#endif
 
-    #define FIL_RUNOUT_PULLUP               // Use internal pullup for filament runout pins.
-    //#define FIL_RUNOUT_PULLDOWN
-  #endif 
+#if (MB(CREALITY_V4) || MB(CREALITY_V422))
+  #if ANY(DWIN_DISPLAY, DACAI_DISPLAY)
+    #define PRINTERNAME "Ender-3 V2"
+  #else
+    #define PRINTERNAME "Aquila"
+  #endif
+#elif MB(CREALITY_V427)
+  #if ANY(DWIN_DISPLAY, DACAI_DISPLAY)
+    #define PRINTERNAME "Ender-3 Series"
+  #else
+    #define PRINTERNAME "Aquila"
+  #endif
+#elif MB(CREALITY_V423)
+  #define PRINTERNAME "Ender-2 Pro"
+#elif (MB(CREALITY_V24S1_301) || MB(CREALITY_V24S1))
+  #define PRINTERNAME "Ender-3 S1"
+#endif
+
+#if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+  #if ENABLED(BLTOUCH)
+    #define MODEFW " BLTouch"
+  #elif ENABLED(FIX_MOUNTED_PROBE)
+    #define MODEFW " ABL Probe"
+  #elif ENABLED(TOUCH_MI_PROBE)
+    #define MODEFW " TouchMI"
+  #elif ENABLED(PROBE_MANUALLY)
+    #define MODEFW " ManualMesh"
+  #endif
+#elif ENABLED(AUTO_BED_LEVELING_UBL)
+  #if NONE(PROBE_MANUALLY, BLTOUCH, FIX_MOUNTED_PROBE, TOUCH_MI_PROBE)
+    #define MODEFW " UBL-Noprobe"
+  #elif ENABLED(BLTOUCH)
+    #define MODEFW " UBL-BLTouch"
+  #elif ENABLED(FIX_MOUNTED_PROBE)
+    #define MODEFW " UBL-ABL"
+  #elif ENABLED(TOUCH_MI_PROBE)
+    #define MODEFW " UBL-TouchMI"
+  #endif
+#else
+  #define MODEFW ""
+#endif
+
+#if ANY(AUTO_BED_LEVELING_BILINEAR, AUTO_BED_LEVELING_UBL)
+  #define GRIDFW " " STRINGIFY(GRID_MAX_POINTS_X) "x" STRINGIFY(GRID_MAX_POINTS_Y)
+#else
+  #define GRIDFW ""
+#endif
+
+
+#ifndef CUSTOM_MACHINE_NAME
+  #define CUSTOM_MACHINE_NAME PRINTERNAME MODEFW GRIDFW
 #endif
 
 //#define BOOTPERSO
-
 
 typedef struct { 
 
@@ -142,6 +181,9 @@ typedef struct {
       uint64_t host_action_label_2 : 48;
       uint64_t host_action_label_3 : 48;
     #endif
+    
+    uint8_t shortcut_0 = 0;
+    uint8_t shortcut_1 = 1;
 
     #if ENABLED(DWIN_CREALITY_LCD_JYERSUI_GCODE_PREVIEW)
       bool show_gcode_thumbnails : 1;
@@ -171,6 +213,7 @@ typedef struct {
           uint8_t fil_fast_load_feedrate = DEF_FILAMENT_CHANGE_FAST_LOAD_FEEDRATE;
       #endif
     #endif
+    
 
   } HMI_datas_t;
 
