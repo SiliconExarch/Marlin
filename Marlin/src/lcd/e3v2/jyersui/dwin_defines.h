@@ -45,7 +45,7 @@
   #define HAS_LCD_BRIGHTNESS 1
 #endif
 #ifndef LCD_BRIGHTNESS_DEFAULT
-  #define LCD_BRIGHTNESS_DEFAULT 127
+  #define LCD_BRIGHTNESS_DEFAULT 25
 #endif
 #ifndef SOUND_MENU_ITEM
   #define SOUND_MENU_ITEM
@@ -91,7 +91,7 @@
 
 #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
   #if ENABLED(BLTOUCH)
-    #define MODEFW " + CR-Touch"
+    #define MODEFW "+CR-Touch"
   #elif ENABLED(FIX_MOUNTED_PROBE)
     #define MODEFW " ABL Probe"
   #elif ENABLED(TOUCH_MI_PROBE)
