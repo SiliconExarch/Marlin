@@ -90,7 +90,7 @@
 
 #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
   #if ENABLED(BLTOUCH)
-    #define MODEFW " BLTouch"
+    #define MODEFW " + CR-Touch"
   #elif ENABLED(FIX_MOUNTED_PROBE)
     #define MODEFW " ABL Probe"
   #elif ENABLED(TOUCH_MI_PROBE)

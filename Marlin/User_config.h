@@ -53,7 +53,7 @@
  * If you haven't a DWIN Display, uncomment your type #define DACAI_DISPLAY or #define AQUILA_DISPLAY
  */
 
-//#define DACAI_DISPLAY
+#define DACAI_DISPLAY
 //#define AQUILA_DISPLAY
 
 
