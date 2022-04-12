@@ -44,9 +44,9 @@
 #ifndef HAS_LCD_BRIGHTNESS
   #define HAS_LCD_BRIGHTNESS 1
 #endif
-//#ifndef LCD_BRIGHTNESS_DEFAULT
-  #define LCD_BRIGHTNESS_DEFAULT 25
-//#endif
+#ifndef LCD_BRIGHTNESS_DEFAULT
+  #define LCD_BRIGHTNESS_DEFAULT 127
+#endif
 #ifndef SOUND_MENU_ITEM
   #define SOUND_MENU_ITEM
 #endif
