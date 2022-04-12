@@ -505,6 +505,7 @@
         #define LCD_BRIGHTNESS_DEFAULT 127
     #endif
   #endif
+  #endif
 #endif
 
 #if IS_ULTRA_LCD
