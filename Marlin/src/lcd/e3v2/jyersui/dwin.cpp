@@ -7362,8 +7362,7 @@
     shortcut1 = HMI_datas.shortcut_1;
 
     #if ENABLED(BAUD_RATE_GCODE)
-      if (BAUDRATE == 112500) HMI_datas.baudratemode = 0;
-      else HMI_datas.baudratemode = 1;
+      HMI_datas.baudratemode = 0;
       sprintf_P(cmd, PSTR("M575 P%i B%i"), BAUD_PORT, HMI_datas.baudratemode ? 250 : 115);
       gcode.process_subcommands_now(cmd);
     #endif
