@@ -1595,7 +1595,7 @@
  * Auto-leveling needs preheating   // Ender3v2 Configs Tititpher68-dev enabled preheating to compensate thermal expansions
  */
 #if DISABLED(PROBE_MANUALLY)
-  //#define PREHEAT_BEFORE_LEVELING
+  #define PREHEAT_BEFORE_LEVELING
 #endif
 #if ENABLED(PROBE_MANUALLY)
   #define PREHEAT_BEFORE_LEVELING_PROBE_MANUALLY
