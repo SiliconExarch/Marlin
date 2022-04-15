@@ -286,6 +286,10 @@
     static bool level_state;
   #endif
 
+  #if BOTH(HAS_BED_PROBE, AUTO_BED_LEVELING_UBL)
+    uint16_t NPrinted = 0;
+  #endif
+
   //struct
   HMI_flags_t HMI_flags;
   HMI_datas_t HMI_datas;
@@ -585,7 +589,7 @@
 
   void CrealityDWINClass::Apply_shortcut(uint8_t shortcut) {
     switch (shortcut){
-      case Preheat_menu: Draw_Menu(Preheat); break;
+      case Preheat_menu: flag_shortcut = true; Draw_Menu(Preheat); break;
       case Cooldown: thermalManager.cooldown(); break;
       case Disable_stepper: queue.inject(F("M84")); break;
       case Autohome: Popup_Handler(Home); gcode.home_all_axes(true); Draw_Main_Menu(1); break;
@@ -601,6 +605,7 @@
         #if !HAS_BED_PROBE
           gcode.process_subcommands_now(F("M211 S0"));
         #endif
+        flag_shortcut = true;
         Draw_Menu(ZOffset);
         break;
       case M_Tramming_menu:
@@ -612,11 +617,13 @@
           level_state = planner.leveling_active;
           set_bed_leveling_enabled(false);
           #endif
+          flag_shortcut = true;
           Draw_Menu(ManualLevel);
           break;
       #if ENABLED(ADVANCED_PAUSE_FEATURE)
         case Change_Fil:
           #if ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
+            flag_shortcut = true;
             Draw_Menu(ChangeFilament);
           #else
             Draw_Menu(Prepare, PREPARE_CHANGEFIL);
@@ -1899,7 +1906,8 @@
               Draw_Menu_Item(row, ICON_Back, GET_TEXT_F(MSG_BACK));
             else {
               TERN_(HAS_LEVELING, set_bed_leveling_enabled(level_state));
-              Draw_Menu(Prepare, PREPARE_MANUALLEVEL);
+              if (flag_shortcut) { flag_shortcut = false; Draw_Main_Menu(1); }
+              else Draw_Menu(Prepare, PREPARE_MANUALLEVEL);
             }
             break;
           #if HAS_BED_PROBE
@@ -2088,7 +2096,8 @@
                 //liveadjust = false;
                 //adjustonclick = false;
                 TERN_(HAS_LEVELING, set_bed_leveling_enabled(level_state));
-                Draw_Menu(Prepare, PREPARE_ZOFFSET);
+                if (flag_shortcut) { flag_shortcut = false; Draw_Main_Menu(1); }
+                else Draw_Menu(Prepare, PREPARE_ZOFFSET);
               }
               break;
             case ZOFFSET_HOME:
@@ -2196,8 +2205,9 @@
             case PREHEAT_BACK:
               if (draw)
                 Draw_Menu_Item(row, ICON_Back, GET_TEXT_F(MSG_BACK));
-              else
-                Draw_Menu(Prepare, PREPARE_PREHEAT);
+              else {
+                if (flag_shortcut) { flag_shortcut = false; Draw_Main_Menu(1); }
+                   else Draw_Menu(Prepare, PREPARE_PREHEAT); }
               break;
             case PREHEAT_MODE:
               if (draw) {
@@ -2275,8 +2285,10 @@
             case CHANGEFIL_BACK:
               if (draw)
                 Draw_Menu_Item(row, ICON_Back, GET_TEXT_F(MSG_BACK));
-              else
-                Draw_Menu(Prepare, PREPARE_CHANGEFIL);
+              else {
+                if (flag_shortcut) { flag_shortcut = false; Draw_Main_Menu(1); }
+                else Draw_Menu(Prepare, PREPARE_CHANGEFIL);
+              }
               break;
             case CHANGEFIL_PARKHEAD:
               if (draw)
@@ -4758,7 +4770,8 @@
           #define LEVELING_SETTINGS_BEDTEMP (LEVELING_SETTINGS_BEDTEMP_ENA + ENABLED(HAS_LEVELING_HEAT))
           #define LEVELING_SETTINGS_FADE (LEVELING_SETTINGS_BEDTEMP + 1)
           #define LEVELING_SETTINGS_TILT (LEVELING_SETTINGS_FADE + ENABLED(AUTO_BED_LEVELING_UBL))
-          #define LEVELING_SETTINGS_PLANE (LEVELING_SETTINGS_TILT + ENABLED(AUTO_BED_LEVELING_UBL))
+          #define LEVELING_SETTINGS_TILT_AFTER_N_PRINTS (LEVELING_SETTINGS_TILT + ENABLED(AUTO_BED_LEVELING_UBL))
+          #define LEVELING_SETTINGS_PLANE (LEVELING_SETTINGS_TILT_AFTER_N_PRINTS + ENABLED(AUTO_BED_LEVELING_UBL))
           #define LEVELING_SETTINGS_ZERO (LEVELING_SETTINGS_PLANE + ENABLED(AUTO_BED_LEVELING_UBL))
           #define LEVELING_SETTINGS_UNDEF (LEVELING_SETTINGS_ZERO + ENABLED(AUTO_BED_LEVELING_UBL))
           #define LEVELING_SETTINGS_TOTAL LEVELING_SETTINGS_UNDEF
@@ -4829,13 +4842,21 @@
                 else
                   Modify_Value(mesh_conf.tilt_grid, 1, 8, 1);
                 break;
+              case LEVELING_SETTINGS_TILT_AFTER_N_PRINTS:
+                if (draw) {
+                  Draw_Menu_Item(row, ICON_Tilt, GET_TEXT_F(MSG_UBL_AUTOTILT_AFTER_N_PRINTS));
+                  Draw_Float(NPrinted, row, false, 1);
+                }
+                else 
+                  Modify_Value(NPrinted, 0, 200, 1);
+                break;
               case LEVELING_SETTINGS_PLANE:
                 if (draw)
                   Draw_Menu_Item(row, ICON_ResumeEEPROM, GET_TEXT_F(MSG_MESH_TO_PLANE));
                 else {
                   if (mesh_conf.create_plane_from_mesh()) {
                     Confirm_Handler(NocreatePlane);
-                    break;
+                  break;
                 }
                   gcode.process_subcommands_now(F("M420 S1"));
                   planner.synchronize();
@@ -6472,6 +6493,9 @@
         #else
           gcode.process_subcommands_now(F("M220 S100\nM221 S100"));  // Initialize Flow and Feerate to 100%
           strcpy(reprint_filename, card.filename);
+          #if BOTH(HAS_BED_PROBE, AUTO_BED_LEVELING_UBL)
+              CrealityDWIN.Autotilt_AfterNPrint(NPrinted);
+          #endif
           card.openAndPrintFile(card.filename);
         #endif
         }
@@ -6671,6 +6695,9 @@
         #endif // ADVANCED_PAUSE_FEATURE
         case ConfirmStartPrint:
           if (selection==0) {
+            #if BOTH(HAS_BED_PROBE, AUTO_BED_LEVELING_UBL)
+              CrealityDWIN.Autotilt_AfterNPrint(NPrinted);
+            #endif
             gcode.process_subcommands_now(F("M220 S100\nM221 S100"));  // Initialize Flow and Feerate to 100%
             strcpy(reprint_filename, card.filename);
             card.openAndPrintFile(card.filename);}
@@ -6681,6 +6708,9 @@
 
         case Reprint:
           if (selection==0) {
+            #if BOTH(HAS_BED_PROBE, AUTO_BED_LEVELING_UBL)
+              CrealityDWIN.Autotilt_AfterNPrint(NPrinted);
+            #endif
             #if ENABLED(DWIN_CREALITY_LCD_JYERSUI_GCODE_PREVIEW) && DISABLED(DACAI_DISPLAY)
               file_preview = true;
             #endif
@@ -7311,6 +7341,9 @@
 
   void CrealityDWINClass::Save_Settings(char *buff) {
     TERN_(AUTO_BED_LEVELING_UBL, HMI_datas.tilt_grid_size = mesh_conf.tilt_grid - 1);
+    #if BOTH(HAS_BED_PROBE, AUTO_BED_LEVELING_UBL)
+      HMI_datas.N_Printed = NPrinted;
+    #endif
     HMI_datas.corner_pos = corner_pos * 10;
     HMI_datas.shortcut_0 = shortcut0;
     HMI_datas.shortcut_1 = shortcut1;
@@ -7331,6 +7364,9 @@
       if(HMI_datas.leveling_active) set_bed_leveling_enabled(HMI_datas.leveling_active);
     #endif
     TERN_(AUTO_BED_LEVELING_UBL, mesh_conf.tilt_grid = HMI_datas.tilt_grid_size + 1);
+    #if BOTH(HAS_BED_PROBE, AUTO_BED_LEVELING_UBL)
+      NPrinted = HMI_datas.N_Printed;
+    #endif
     if (HMI_datas.corner_pos == 0) HMI_datas.corner_pos = 325;
     corner_pos = HMI_datas.corner_pos / 10.0f;
     #if HAS_FILAMENT_SENSOR
@@ -7398,6 +7434,10 @@
     corner_pos = HMI_datas.corner_pos / 10.0f;
     TERN_(SOUND_MENU_ITEM, ui.buzzer_enabled = true);
     
+    #if BOTH(HAS_BED_PROBE, AUTO_BED_LEVELING_UBL)
+      NPrinted = 0;
+    #endif
+
     #if HAS_FILAMENT_SENSOR
       Get_Rsensormode(runout.mode[0]);
     #endif
@@ -7496,6 +7536,36 @@
     DWIN_UpdateLCD();
     delay(500);
   }
+
+  #if BOTH(HAS_BED_PROBE, AUTO_BED_LEVELING_UBL)
+    void CrealityDWINClass::Autotilt_AfterNPrint(uint16_t NPrints) {
+      printStatistics prdatas = print_job_timer.getStats();
+      uint16_t _NPrints = prdatas.totalPrints;
+      if ((NPrints > 0) && ( _NPrints >= NPrints)) {
+          if (ubl.storage_slot < 0) { Popup_Handler(MeshSlot); return; }
+          else {
+            #if EITHER(PREHEAT_BEFORE_LEVELING, PREHEAT_BEFORE_LEVELING_PROBE_MANUALLY)
+              HeatBeforeLeveling();
+            #endif
+            Update_Status("");
+            Popup_Handler(Home);
+            gcode.home_all_axes(true);
+            Popup_Handler(Level);
+            if (mesh_conf.tilt_grid > 1) {
+                sprintf_P(cmd, PSTR("G29 J%i"), mesh_conf.tilt_grid);
+                gcode.process_subcommands_now(cmd);
+            }
+            else  gcode.process_subcommands_now(F("G29 J"));
+            planner.synchronize();
+            #if ENABLED(EEPROM_SETTINGS)
+              gcode.process_subcommands_now(F("G29 S"));
+              AudioFeedback();  
+              planner.synchronize();
+            #endif
+          }
+        }  
+      }
+  #endif
 
   void CrealityDWINClass::DWIN_Init_diag_endstops() {
     last_process = process;
