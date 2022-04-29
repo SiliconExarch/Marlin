@@ -1,4 +1,5 @@
 # Contains code from: https://github.com/mriscoc/Marlin_Ender3v2/blob/42585074807fa799bdee7ced10c9d83508df6ebf/slicer%20scripts/cura/CreateJPEGThumbnail.py
+
 import base64
 
 from UM.Logger import Logger

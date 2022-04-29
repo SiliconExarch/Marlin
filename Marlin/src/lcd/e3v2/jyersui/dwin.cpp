@@ -754,17 +754,23 @@
       // DWIN_Draw_Rectangle(1, GetColor(HMI_datas.background, Color_Bg_Black), 226, MBASE(row) - 3, 226 + 40, MBASE(row) - 3 + 20);
       // DRAW_IconWTB(ICON, (value ? ICON_Checkbox_T : ICON_Checkbox_F), 226, MBASE(row) - 3);
       DRAW_IconWB(ICON, (value ? ICON_Checkbox_T : ICON_Checkbox_F), 226, MBASE(row) - 3);
-    #else                                         // Draw a basic checkbox using rectangles and lines
-      DWIN_Draw_Rectangle(1, Color_Bg_Black, 226, MBASE(row) - 3, 226 + 20, MBASE(row) - 3 + 20);
-      DWIN_Draw_Rectangle(0, Color_White, 226, MBASE(row) - 3, 226 + 20, MBASE(row) - 3 + 20);
-      if (value) {
-        DWIN_Draw_Line(Check_Color, 227, MBASE(row) - 3 + 11, 226 + 8, MBASE(row) - 3 + 17);
-        DWIN_Draw_Line(Check_Color, 227 + 8, MBASE(row) - 3 + 17, 226 + 19, MBASE(row) - 3 + 1);
-        DWIN_Draw_Line(Check_Color, 227, MBASE(row) - 3 + 12, 226 + 8, MBASE(row) - 3 + 18);
-        DWIN_Draw_Line(Check_Color, 227 + 8, MBASE(row) - 3 + 18, 226 + 19, MBASE(row) - 3 + 2);
-        DWIN_Draw_Line(Check_Color, 227, MBASE(row) - 3 + 13, 226 + 8, MBASE(row) - 3 + 19);
-        DWIN_Draw_Line(Check_Color, 227 + 8, MBASE(row) - 3 + 19, 226 + 19, MBASE(row) - 3 + 3);
-      }
+    #else // Draw a basic checkbox using rectangles and lines
+      #if ENABLED(DACAI_DISPLAY)
+        DWIN_Draw_Rectangle(1, Color_Bg_Black, 226, MBASE(row), 226 + 17, MBASE(row) + 17);
+        DWIN_Draw_Rectangle(0, Color_White, 226, MBASE(row), 226 + 17, MBASE(row) + 17);
+        DWIN_Draw_String(true, DWIN_FONT_MENU, Check_Color, Color_Bg_Black, 226 + 2, MBASE(row) - 1, value ? F("x") : F(" "));
+      #else
+        DWIN_Draw_Rectangle(1, Color_Bg_Black, 226, MBASE(row) - 3, 226 + 20, MBASE(row) - 3 + 20);
+        DWIN_Draw_Rectangle(0, Color_White, 226, MBASE(row) - 3, 226 + 20, MBASE(row) - 3 + 20);
+        if (value) {
+          DWIN_Draw_Line(TERN(AQUILA_DISPLAY, Color_Red, Check_Color), 227, MBASE(row) - 3 + 11, 226 + 8, MBASE(row) - 3 + 17);
+          DWIN_Draw_Line(TERN(AQUILA_DISPLAY, Color_Red, Check_Color), 227 + 8, MBASE(row) - 3 + 17, 226 + 19, MBASE(row) - 3 + 1);
+          DWIN_Draw_Line(TERN(AQUILA_DISPLAY, Color_Red, Check_Color), 227, MBASE(row) - 3 + 12, 226 + 8, MBASE(row) - 3 + 18);
+          DWIN_Draw_Line(TERN(AQUILA_DISPLAY, Color_Red, Check_Color), 227 + 8, MBASE(row) - 3 + 18, 226 + 19, MBASE(row) - 3 + 2);
+          DWIN_Draw_Line(TERN(AQUILA_DISPLAY, Color_Red, Check_Color), 227, MBASE(row) - 3 + 13, 226 + 8, MBASE(row) - 3 + 19);
+          DWIN_Draw_Line(TERN(AQUILA_DISPLAY, Color_Red, Check_Color), 227 + 8, MBASE(row) - 3 + 19, 226 + 19, MBASE(row) - 3 + 3);
+        }
+      #endif
     #endif
   }
 
@@ -4318,7 +4324,7 @@
       case Filmenu:
 
         #define FIL_BACK 0
-        #define FIL_SENSORENABLED (FIL_BACK + HAS_FILAMENT_SENSOR)
+        #define FIL_SENSORENABLED (FIL_BACK + ENABLED(HAS_FILAMENT_SENSOR))
         #define FIL_RUNOUTACTIVE (FIL_SENSORENABLED + (BOTH(HAS_FILAMENT_SENSOR, EXTJYERSUI)))
         #define FIL_SENSORDISTANCE (FIL_RUNOUTACTIVE + 1)
         #define FIL_LOAD (FIL_SENSORDISTANCE + ENABLED(ADVANCED_PAUSE_FEATURE))
@@ -4769,8 +4775,8 @@
           #define LEVELING_SETTINGS_BEDTEMP_ENA (LEVELING_SETTINGS_HOTENDTEMP  + ENABLED(HAS_LEVELING_HEAT))
           #define LEVELING_SETTINGS_BEDTEMP (LEVELING_SETTINGS_BEDTEMP_ENA + ENABLED(HAS_LEVELING_HEAT))
           #define LEVELING_SETTINGS_FADE (LEVELING_SETTINGS_BEDTEMP + 1)
-          #define LEVELING_SETTINGS_TILT (LEVELING_SETTINGS_FADE + ENABLED(AUTO_BED_LEVELING_UBL))
-          #define LEVELING_SETTINGS_TILT_AFTER_N_PRINTS (LEVELING_SETTINGS_TILT + ENABLED(AUTO_BED_LEVELING_UBL))
+          #define LEVELING_SETTINGS_TILT (LEVELING_SETTINGS_FADE + BOTH(AUTO_BED_LEVELING_UBL, HAS_BED_PROBE))
+          #define LEVELING_SETTINGS_TILT_AFTER_N_PRINTS (LEVELING_SETTINGS_TILT + BOTH(AUTO_BED_LEVELING_UBL, HAS_BED_PROBE))
           #define LEVELING_SETTINGS_PLANE (LEVELING_SETTINGS_TILT_AFTER_N_PRINTS + ENABLED(AUTO_BED_LEVELING_UBL))
           #define LEVELING_SETTINGS_ZERO (LEVELING_SETTINGS_PLANE + ENABLED(AUTO_BED_LEVELING_UBL))
           #define LEVELING_SETTINGS_UNDEF (LEVELING_SETTINGS_ZERO + ENABLED(AUTO_BED_LEVELING_UBL))
@@ -4834,22 +4840,24 @@
                 break;
 
             #if ENABLED(AUTO_BED_LEVELING_UBL)
-              case LEVELING_SETTINGS_TILT:
-                if (draw) {
-                  Draw_Menu_Item(row, ICON_Tilt, GET_TEXT_F(MSG_LCD_TILTING_GRID_SIZE));
-                  Draw_Float(mesh_conf.tilt_grid, row, false, 1);
-                }
-                else
-                  Modify_Value(mesh_conf.tilt_grid, 1, 8, 1);
-                break;
-              case LEVELING_SETTINGS_TILT_AFTER_N_PRINTS:
-                if (draw) {
-                  Draw_Menu_Item(row, ICON_Tilt, GET_TEXT_F(MSG_UBL_AUTOTILT_AFTER_N_PRINTS));
-                  Draw_Float(NPrinted, row, false, 1);
-                }
-                else 
-                  Modify_Value(NPrinted, 0, 200, 1);
-                break;
+              #if HAS_BED_PROBE
+                case LEVELING_SETTINGS_TILT:
+                  if (draw) {
+                    Draw_Menu_Item(row, ICON_Tilt, GET_TEXT_F(MSG_LCD_TILTING_GRID_SIZE));
+                    Draw_Float(mesh_conf.tilt_grid, row, false, 1);
+                  }
+                  else
+                    Modify_Value(mesh_conf.tilt_grid, 1, 8, 1);
+                  break;
+                case LEVELING_SETTINGS_TILT_AFTER_N_PRINTS:
+                  if (draw) {
+                    Draw_Menu_Item(row, ICON_Tilt, GET_TEXT_F(MSG_UBL_AUTOTILT_AFTER_N_PRINTS));
+                    Draw_Float(NPrinted, row, false, 1);
+                  }
+                  else 
+                    Modify_Value(NPrinted, 0, 200, 1);
+                  break;
+              #endif
               case LEVELING_SETTINGS_PLANE:
                 if (draw)
                   Draw_Menu_Item(row, ICON_ResumeEEPROM, GET_TEXT_F(MSG_MESH_TO_PLANE));
@@ -5326,8 +5334,8 @@
         #define TUNE_ZDOWN (TUNE_ZUP + ENABLED(HAS_ZOFFSET_ITEM))
         #define TUNE_FWRETRACT (TUNE_ZDOWN + ENABLED(FWRETRACT))
         #define TUNE_CHANGEFIL (TUNE_FWRETRACT + ENABLED(FILAMENT_LOAD_UNLOAD_GCODES))
-        #define TUNE_FILSENSORENABLED (TUNE_CHANGEFIL + HAS_FILAMENT_SENSOR)
-        #define TUNE_FILSENSORDISTANCE (TUNE_FILSENSORENABLED + HAS_FILAMENT_SENSOR)
+        #define TUNE_FILSENSORENABLED (TUNE_CHANGEFIL + ENABLED(HAS_FILAMENT_SENSOR))
+        #define TUNE_FILSENSORDISTANCE (TUNE_FILSENSORENABLED + ENABLED(HAS_FILAMENT_SENSOR))
         #define TUNE_SCREENLOCK (TUNE_FILSENSORDISTANCE + 1)     
         #define TUNE_TOTAL TUNE_SCREENLOCK
 
@@ -7494,7 +7502,7 @@
     // Filament Runout process
     void CrealityDWINClass::DWIN_Filament_Runout(const uint8_t extruder) { LCD_MESSAGE(MSG_RUNOUT_SENSOR); }
 
-    void CrealityDWINClass::Get_Rsensormode(RunoutMode Rsmode) {
+    void CrealityDWINClass::Get_Rsensormode(uint8_t Rsmode) {
       switch (Rsmode) {
            case RM_NONE: rsensormode = 0; break; // None 
            case RM_OUT_ON_HIGH: rsensormode = 1; break; // mode HIGH
